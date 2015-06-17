@@ -170,7 +170,6 @@ class PageTemplater {
                 $this->templates = array(
                         'templates/page-t-twitpics.php'     => 'ALT Lab TwitPics',
                 );
-				
         } 
 
 
