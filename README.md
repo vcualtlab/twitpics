@@ -35,7 +35,11 @@ Set Post Type to Twitpic
 
 ### Save Settings
 
+Click the button
+
 ### Import Tweets Now!
+
+Click the button
 
 ## Frequently Asked Questions 
 
