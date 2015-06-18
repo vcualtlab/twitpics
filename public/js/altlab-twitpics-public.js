@@ -39,42 +39,9 @@
 		});
 
 		// remove the attrs here - width height and scale - this is added in by some themes - we don't want them
-		// $('.altlabtwitpic-brick img').removeAttr( "height" ).removeAttr( "width" ).removeAttr( "scale" );
+		$('.altlabtwitpic-brick img').removeAttr( "height" ).removeAttr( "width" ).removeAttr( "scale" );
 		
-		// $(".altlabtwitpic-brick img.lazy").lazyload();
-		$(".altlabtwitpic-brick img.lazy").lazyload({
-	        effect : "fadeIn",
-	        load : adjustHeights
-    	});
-
-		function adjustHeights() {
-
-		    var columnheight1 = 10;
-		    var columnheight2 = 10;
-
-		    jQuery('.altlabtwitpic-brick img').each(function(){
-		        //if product in left column
-		        itemheight = jQuery(this).height();
-		        if(jQuery(this).css('left') == '0px'){
-		            jQuery(this).css('top', columnheight1 + 'px');
-		            columnheight1 += itemheight + 30;
-		        }else{
-		        //if in right column
-		            jQuery(this).css('top', columnheight2 + 'px');
-		            columnheight2 += itemheight + 30;
-		        }
-
-		    });
-
-		    //don't forget to set post-container to the highest height
-		    if(Math.max(columnheight1, columnheight2) >0){
-		        jQuery('.altlabtwitpic-brick img').css('height', Math.max(columnheight1, columnheight2) + 'px');
-		    }
-		}
-
-// maybe this https://bountify.co/small-fix-for-isotope-masonry-and-lazy-load
-
-
+		// $(".altlabtwitpic-bricvk img.lazy").lazyload();
 	});
 
 })( jQuery );

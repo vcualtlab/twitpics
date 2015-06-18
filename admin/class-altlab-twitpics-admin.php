@@ -170,9 +170,11 @@ function altlab_twitpics_shortcode( $atts ) {
  	
  	$output= "";
 	// Run a new query for the twitpics
+	$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
 	$args = array(
 		'post_type' => 'twitpic',
-		'post_per_page' => 20
+		'paged' => $paged,
+		'posts_per_page' => 5
 	);
 
 	$the_query = new WP_Query( $args );
@@ -189,8 +191,7 @@ function altlab_twitpics_shortcode( $atts ) {
 		if ( has_post_thumbnail() ) {
 			$thumbnail_url = wp_get_attachment_url( get_post_thumbnail_id($post->ID) );
 			$thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id($post->ID), 'full' );
-			print_r($thumbnail);
-
+			// print_r($thumbnail);
 
 			// $thumbnail = get_the_post_thumbnail( $post->ID, 'full' );
 			$content = get_the_content();
@@ -198,13 +199,17 @@ function altlab_twitpics_shortcode( $atts ) {
 
 		$output .= "
 		  <div class='altlabtwitpic-brick'>
-		  	<img class='twitpic lazy' width='".$thumbnail[1]."' height='".$thumbnail[2]."' data-original='".$thumbnail[0]."' />
+		  	<img class='twitpic lazy' width='".$thumbnail[1]."' height='".$thumbnail[2]."' src='".$thumbnail[0]."' data-original='".$thumbnail[0]."' />
 		  	{$content}
 		  </div>";
 	
 	endwhile;
 		$output .= "</div>";
 	endif;
+		
+		$output .= "<nav class='navigation pagination'><div class='next'>".get_next_posts_link('Next Page', $the_query->max_num_pages)."</div>";
+		$output .= "<div class='prev'>".get_previous_posts_link('Previous Page')."</div></nav>";
+
 	wp_reset_postdata();	
 
     return $output;
