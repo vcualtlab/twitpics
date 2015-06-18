@@ -103,148 +103,6 @@ class Altlab_Twitpics_Admin {
 }
 
 
-
-
-class PageTemplater {
-
-	/**
-         * A Unique Identifier
-         */
-        protected $plugin_slug;
-
-        /**
-         * A reference to an instance of this class.
-         */
-        private static $instance;
-
-        /**
-         * The array of templates that this plugin tracks.
-         */
-        protected $templates;
-
-
-        /**
-         * Returns an instance of this class. 
-         */
-        public static function get_instance() {
-
-                if( null == self::$instance ) {
-                        self::$instance = new PageTemplater();
-                } 
-
-                return self::$instance;
-
-        } 
-
-        /**
-         * Initializes the plugin by setting filters and administration functions.
-         */
-        private function __construct() {
-
-                $this->templates = array();
-
-
-                // Add a filter to the attributes metabox to inject template into the cache.
-                add_filter(
-					'page_attributes_dropdown_pages_args',
-					 array( $this, 'register_project_templates' ) 
-				);
-
-
-                // Add a filter to the save post to inject out template into the page cache
-                add_filter(
-					'wp_insert_post_data', 
-					array( $this, 'register_project_templates' ) 
-				);
-
-
-                // Add a filter to the template include to determine if the page has our 
-				// template assigned and return it's path
-                add_filter(
-					'template_include', 
-					array( $this, 'view_project_template') 
-				);
-
-
-                // Add your templates to this array.
-                $this->templates = array(
-                        'templates/page-t-twitpics.php'     => 'ALT Lab TwitPics',
-                );
-        } 
-
-
-        /**
-         * Adds our template to the pages cache in order to trick WordPress
-         * into thinking the template file exists where it doens't really exist.
-         *
-         */
-
-        public function register_project_templates( $atts ) {
-
-                // Create the key used for the themes cache
-                $cache_key = 'page_templates-' . md5( get_theme_root() . '/' . get_stylesheet() );
-
-                // Retrieve the cache list. 
-				// If it doesn't exist, or it's empty prepare an array
-                $templates = wp_get_theme()->get_page_templates();
-                if ( empty( $templates ) ) {
-                        $templates = array();
-                } 
-
-                // New cache, therefore remove the old one
-                wp_cache_delete( $cache_key , 'themes');
-
-                // Now add our template to the list of templates by merging our templates
-                // with the existing templates array from the cache.
-                $templates = array_merge( $templates, $this->templates );
-
-                // Add the modified cache to allow WordPress to pick it up for listing
-                // available templates
-                wp_cache_add( $cache_key, $templates, 'themes', 1800 );
-
-                return $atts;
-
-        } 
-
-        /**
-         * Checks if the template is assigned to the page
-         */
-        public function view_project_template( $template ) {
-
-                global $post;
-
-                if (!isset($this->templates[get_post_meta( 
-					$post->ID, '_wp_page_template', true 
-				)] ) ) {
-					
-                        return $template;
-						
-                } 
-
-                $file = plugin_dir_path(__FILE__). get_post_meta( 
-					$post->ID, '_wp_page_template', true 
-				);
-				
-                // Just to be safe, we check if the file exist first
-                if( file_exists( $file ) ) {
-                        return $file;
-                } 
-				else { echo $file; }
-
-                return $template;
-
-        } 
-
-
-} 
-
-add_action( 'plugins_loaded', array( 'PageTemplater', 'get_instance' ) );
-
-
-
-
-
-
 // Flush your rewrite rules
 
 function altlabtwitpics_flush_rewrite_rules() {
@@ -293,4 +151,70 @@ function altlabtwitpics_custom_post_type() {
 
 // adding the function to the Wordpress init
 add_action( 'init', 'altlabtwitpics_custom_post_type');
+
+
+
+
+
+
+
+
+
+// [bartag foo="foo-value"]
+function altlab_twitpics_shortcode( $atts ) {
+	global $post;
+    $a = shortcode_atts( array(
+        'foo' => 'something',
+        'bar' => 'something else',
+    ), $atts );
+ 	
+ 	$output= "";
+	// Run a new query for the twitpics
+	$args = array(
+		'post_type' => 'twitpic',
+		'post_per_page' => 20
+	);
+
+	$the_query = new WP_Query( $args );
+
+	// The Loop
+	if ( $the_query->have_posts() ) :
+		$output = "
+			<div class='altlabtwitpic-masonry'>
+		  		<div class='altlabtwitpic-grid-sizer'></div>";
+	
+	
+	while ( $the_query->have_posts() ) : $the_query->the_post();
+	
+		if ( has_post_thumbnail() ) {
+			$thumbnail_url = wp_get_attachment_url( get_post_thumbnail_id($post->ID) );
+			$thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id($post->ID), 'full' );
+			print_r($thumbnail);
+
+
+			// $thumbnail = get_the_post_thumbnail( $post->ID, 'full' );
+			$content = get_the_content();
+		}
+
+		$output .= "
+		  <div class='altlabtwitpic-brick'>
+		  	<img class='twitpic lazy' width='".$thumbnail[1]."' height='".$thumbnail[2]."' data-original='".$thumbnail[0]."' />
+		  	{$content}
+		  </div>";
+	
+	endwhile;
+		$output .= "</div>";
+	endif;
+	wp_reset_postdata();	
+
+    return $output;
+}
+add_shortcode( 'twitpic', 'altlab_twitpics_shortcode' );
+
+
+
+
+
+
+
 	

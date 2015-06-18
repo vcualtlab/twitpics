@@ -73,9 +73,7 @@ class Altlab_Twitpics_Public {
 		 * class.
 		 */
 
-		if ( is_page_template( 'templates/page-t-twitpics.php' ) ){
-			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/altlab-twitpics-public.css', array(), $this->version, 'all' );
-		}
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/altlab-twitpics-public.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -96,10 +94,12 @@ class Altlab_Twitpics_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		if ( is_page_template( 'templates/page-t-twitpics.php' ) ){
-			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/altlab-twitpics-public.js', array( 'jquery','jquery-masonry' ), $this->version, false );
-		}
+		wp_enqueue_script( $this->plugin_name.'lazyload', plugin_dir_url( __FILE__ ) . 'js/bower_components/jquery.lazyload/jquery.lazyload.js', array( 'jquery' ), $this->version, false );
 
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/altlab-twitpics-public.js', array( 'jquery','jquery-masonry' ), $this->version, false );
+
+		
+		
 	}
 
 }
