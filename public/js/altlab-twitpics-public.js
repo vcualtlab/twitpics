@@ -29,4 +29,14 @@
 	 * be doing this, we should try to minimize doing that in our own work.
 	 */
 
+	$(function() {
+		$('.masonry').masonry({
+		  // set itemSelector so .grid-sizer is not used in layout
+		  itemSelector: '.brick',
+		  // use element for option
+		  columnWidth: '.grid-sizer',
+		  percentPosition: true
+		});
+	});
+
 })( jQuery );

@@ -74,7 +74,7 @@ class Altlab_Twitpics_Admin {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/altlab-twitpics-admin.css', array(), $this->version, 'all' );
-
+		// wp_enqueue_style( 'http:////maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -239,3 +239,58 @@ class PageTemplater {
 } 
 
 add_action( 'plugins_loaded', array( 'PageTemplater', 'get_instance' ) );
+
+
+
+
+
+
+// Flush your rewrite rules
+
+function altlabtwitpics_flush_rewrite_rules() {
+	flush_rewrite_rules();
+}
+register_activation_hook( __FILE__, 'altlabtwitpics_flush_rewrite_rules' );
+
+// let's create the function for the Twitpic
+function altlabtwitpics_custom_post_type() { 
+	// creating (registering) the Twitpic 
+	register_post_type( 'twitpic', /* (http://codex.wordpress.org/Function_Reference/register_post_type) */
+		// let's now add all the options for this Twitpic
+		array( 'labels' => array(
+			'name' => __( 'Twitpics', 'bonestheme' ), /* This is the Title of the Group */
+			'singular_name' => __( 'Twitpic', 'bonestheme' ), /* This is the individual type */
+			'all_items' => __( 'All Twitpics', 'bonestheme' ), /* the all items menu item */
+			'add_new' => __( 'Add New', 'bonestheme' ), /* The add new menu item */
+			'add_new_item' => __( 'Add New Twitpic', 'bonestheme' ), /* Add New Display Title */
+			'edit' => __( 'Edit', 'bonestheme' ), /* Edit Dialog */
+			'edit_item' => __( 'Edit Twitpics', 'bonestheme' ), /* Edit Display Title */
+			'new_item' => __( 'New Twitpic', 'bonestheme' ), /* New Display Title */
+			'view_item' => __( 'View Twitpic', 'bonestheme' ), /* View Display Title */
+			'search_items' => __( 'Search Twitpic', 'bonestheme' ), /* Search Twitpic Title */ 
+			'not_found' =>  __( 'Nothing found in the Database.', 'bonestheme' ), /* This displays if there are no entries yet */ 
+			'not_found_in_trash' => __( 'Nothing found in Trash', 'bonestheme' ), /* This displays if there is nothing in the trash */
+			'parent_item_colon' => ''
+			), /* end of arrays */
+			'description' => __( 'This is the Twitpic type', 'bonestheme' ), /* Twitpic Description */
+			'public' => true,
+			'publicly_queryable' => true,
+			'exclude_from_search' => false,
+			'show_ui' => true,
+			'query_var' => true,
+			'menu_position' => 8, /* this is what order you want it to appear in on the left hand side menu */ 
+			'menu_icon' => 'dashicons-twitter', /* the icon for the Twitpic type menu */
+			'rewrite'	=> array( 'slug' => 'twitpic', 'with_front' => false ), /* you can specify its url slug */
+			'has_archive' => 'twitpic', /* you can rename the slug here */
+			'capability_type' => 'post',
+			'hierarchical' => false,
+			/* the next one is important, it tells what's enabled in the post editor */
+			'supports' => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'trackbacks', 'custom-fields', 'comments', 'revisions', 'sticky')
+		) /* end of options */
+	); /* end of register Twitpic */
+	
+}
+
+// adding the function to the Wordpress init
+add_action( 'init', 'altlabtwitpics_custom_post_type');
+	
