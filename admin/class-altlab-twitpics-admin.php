@@ -164,17 +164,23 @@ add_action( 'init', 'altlabtwitpics_custom_post_type');
 function altlab_twitpics_shortcode( $atts ) {
 	global $post;
     $a = shortcode_atts( array(
-        'foo' => 'something',
-        'bar' => 'something else',
+        'paged' => 'true',
+        'post_type' => 'twitpic',
+        'post_per_page' => '15',
+        'max_column' => '3'
     ), $atts );
  	
  	$output= "";
 	// Run a new query for the twitpics
-	$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+	if ( $a['paged'] == 'true' ){
+		$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+	} else {
+		$paged = null;
+	}
 	$args = array(
-		'post_type' => 'twitpic',
+		'post_type' => $a['post_type'],
 		'paged' => $paged,
-		'posts_per_page' => 5
+		'posts_per_page' => $a['post_per_page']
 	);
 
 	$the_query = new WP_Query( $args );
@@ -182,7 +188,7 @@ function altlab_twitpics_shortcode( $atts ) {
 	// The Loop
 	if ( $the_query->have_posts() ) :
 		$output = "
-			<div class='altlabtwitpic-masonry'>
+			<div class='altlabtwitpic-masonry maxcol".$a['max_column']."'>
 		  		<div class='altlabtwitpic-grid-sizer'></div>";
 	
 	
@@ -190,25 +196,27 @@ function altlab_twitpics_shortcode( $atts ) {
 	
 		if ( has_post_thumbnail() ) {
 			$thumbnail_url = wp_get_attachment_url( get_post_thumbnail_id($post->ID) );
-			$thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id($post->ID), 'full' );
-			// print_r($thumbnail);
-
-			// $thumbnail = get_the_post_thumbnail( $post->ID, 'full' );
-			$content = get_the_content();
 		}
 
-		$output .= "
-		  <div class='altlabtwitpic-brick'>
-		  	<img class='twitpic lazy' width='".$thumbnail[1]."' height='".$thumbnail[2]."' src='".$thumbnail[0]."' data-original='".$thumbnail[0]."' />
-		  	{$content}
-		  </div>";
+		$output .= "<div class='altlabtwitpic-brick'>";
+		if ( has_post_thumbnail() ) {
+			$output .= "<img class='twitpic' src='".$thumbnail_url."'/>";
+		}
+		
+		$output .= get_the_content();
+		
+		$output .= "</div>";
 	
 	endwhile;
 		$output .= "</div>";
 	endif;
 		
+
+	if ( $a['paged'] == 'true' ){
 		$output .= "<nav class='navigation pagination'><div class='next'>".get_next_posts_link('Next Page', $the_query->max_num_pages)."</div>";
 		$output .= "<div class='prev'>".get_previous_posts_link('Previous Page')."</div></nav>";
+	}
+
 
 	wp_reset_postdata();	
 

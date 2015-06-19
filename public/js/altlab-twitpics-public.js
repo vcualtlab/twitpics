@@ -41,7 +41,6 @@
 		// remove the attrs here - width height and scale - this is added in by some themes - we don't want them
 		$('.altlabtwitpic-brick img').removeAttr( "height" ).removeAttr( "width" ).removeAttr( "scale" );
 		
-		// $(".altlabtwitpic-bricvk img.lazy").lazyload();
 	});
 
 })( jQuery );
