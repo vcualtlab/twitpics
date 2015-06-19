@@ -102,87 +102,35 @@ class Altlab_Twitpics_Admin {
 
 }
 
-
-// Flush your rewrite rules
-
-function altlabtwitpics_flush_rewrite_rules() {
-	flush_rewrite_rules();
-}
-register_activation_hook( __FILE__, 'altlabtwitpics_flush_rewrite_rules' );
-
-// let's create the function for the Twitpic
-function altlabtwitpics_custom_post_type() { 
-	// creating (registering) the Twitpic 
-	register_post_type( 'twitpic', /* (http://codex.wordpress.org/Function_Reference/register_post_type) */
-		// let's now add all the options for this Twitpic
-		array( 'labels' => array(
-			'name' => __( 'Twitpics', 'bonestheme' ), /* This is the Title of the Group */
-			'singular_name' => __( 'Twitpic', 'bonestheme' ), /* This is the individual type */
-			'all_items' => __( 'All Twitpics', 'bonestheme' ), /* the all items menu item */
-			'add_new' => __( 'Add New', 'bonestheme' ), /* The add new menu item */
-			'add_new_item' => __( 'Add New Twitpic', 'bonestheme' ), /* Add New Display Title */
-			'edit' => __( 'Edit', 'bonestheme' ), /* Edit Dialog */
-			'edit_item' => __( 'Edit Twitpics', 'bonestheme' ), /* Edit Display Title */
-			'new_item' => __( 'New Twitpic', 'bonestheme' ), /* New Display Title */
-			'view_item' => __( 'View Twitpic', 'bonestheme' ), /* View Display Title */
-			'search_items' => __( 'Search Twitpic', 'bonestheme' ), /* Search Twitpic Title */ 
-			'not_found' =>  __( 'Nothing found in the Database.', 'bonestheme' ), /* This displays if there are no entries yet */ 
-			'not_found_in_trash' => __( 'Nothing found in Trash', 'bonestheme' ), /* This displays if there is nothing in the trash */
-			'parent_item_colon' => ''
-			), /* end of arrays */
-			'description' => __( 'This is the Twitpic type', 'bonestheme' ), /* Twitpic Description */
-			'public' => true,
-			'publicly_queryable' => true,
-			'exclude_from_search' => false,
-			'show_ui' => true,
-			'query_var' => true,
-			'menu_position' => 8, /* this is what order you want it to appear in on the left hand side menu */ 
-			'menu_icon' => 'dashicons-twitter', /* the icon for the Twitpic type menu */
-			'rewrite'	=> array( 'slug' => 'twitpic', 'with_front' => false ), /* you can specify its url slug */
-			'has_archive' => 'twitpic', /* you can rename the slug here */
-			'capability_type' => 'post',
-			'hierarchical' => false,
-			/* the next one is important, it tells what's enabled in the post editor */
-			'supports' => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'trackbacks', 'custom-fields', 'comments', 'revisions', 'sticky')
-		) /* end of options */
-	); /* end of register Twitpic */
-	
-}
-
-// adding the function to the Wordpress init
-add_action( 'init', 'altlabtwitpics_custom_post_type');
-
-
-
-
-
-
-
-
-
 // [bartag foo="foo-value"]
 function altlab_twitpics_shortcode( $atts ) {
 	global $post;
     $a = shortcode_atts( array(
         'paged' => 'true',
         'post_type' => 'twitpic',
+        'category_name' => '',
+        'tag' => '',
         'posts_per_page' => '15',
-        'max_column' => '3'
+        'max_column' => '3',
+        'thumbnail' => 'true',
+        'thumbnail_size' => 'large',
+        'excerpt' => 'false',
+        'content' => 'true',
+        'title' => 'false',
+        'author' => 'false',
+        'date' => 'false'
     ), $atts );
-
-    echo $a['paged'];
  	
  	$output= "";
+	
 	// Run a new query for the twitpics
-	if ( $a['paged'] == 'true' ){
-		$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-	} else {
-		$paged = null;
-	}
+	if ( $a['paged'] == 'true' ){ $paged = (get_query_var('paged')) ? get_query_var('paged') : 1; } else { $paged = null; }
 	$args = array(
 		'post_type' => $a['post_type'],
 		'paged' => $paged,
-		'posts_per_page' => $a['posts_per_page']
+		'posts_per_page' => $a['posts_per_page'],
+		'category_name' => $a['category_name'],
+        'tag' => $a['tag']
 	);
 
 	$the_query = new WP_Query( $args );
@@ -195,19 +143,40 @@ function altlab_twitpics_shortcode( $atts ) {
 	
 	
 	while ( $the_query->have_posts() ) : $the_query->the_post();
-	
-		if ( has_post_thumbnail() ) {
-			$thumbnail_url = wp_get_attachment_url( get_post_thumbnail_id($post->ID) );
+		// thumbnail output
+		$output .= "<article class='altlabtwitpic-brick hentry'>";
+		if ( has_post_thumbnail() && $a['thumbnail'] == 'true' ) {
+			$thumbnail_url = wp_get_attachment_image_src( get_post_thumbnail_id(), $a['thumbnail_size']);
+			$output .= "<img class='twitpic' src='".$thumbnail_url[0]."'/>";
+		}
+		
+		// postmeta
+		if ( $a['title'] == 'true' || $a['author'] == 'true' || $a['date'] == 'true' ){
+			$output .= "<ul class='post-meta'>";
+			if ( $a['title'] == 'true' ){
+				$output .= "<li class='post-title'>".get_the_title()."</li>";
+			}
+			if ( $a['author'] == 'true' ){
+				$output .= "<li class='post-author'>".get_the_author()."</li>";
+			}
+			if ( $a['date'] == 'true' ){
+				$output .= "<li class='post-date'>".get_the_date()."</li>";
+			}
+
 		}
 
-		$output .= "<div class='altlabtwitpic-brick'>";
-		if ( has_post_thumbnail() ) {
-			$output .= "<img class='twitpic' src='".$thumbnail_url."'/>";
+		if ( current_user_can('administrator') ){
+			$output .= "<a href='".get_edit_post_link()."'>&#9998;</a>";
 		}
-		
-		$output .= get_the_content();
-		
-		$output .= "</div>";
+
+		if ( $a['content'] == 'true' ){
+			$output .= get_the_content();
+		}
+		if ( $a['excerpt'] == 'true' ){
+			$output .= get_the_excerpt();
+		}
+
+		$output .= "</article>";
 	
 	endwhile;
 		$output .= "</div>";

@@ -8,8 +8,6 @@
 	box-sizing: border-box;
 	width: 98%;
 	margin: 0 1%;
-	/*position: relative;*/
-	/*right: -.5%;*/
 }
 
 .altlabtwitpic-grid-sizer,
@@ -31,15 +29,23 @@
 
 
 
-@media (min-width: 600px) {
+@media (min-width: 500px) {
 	.altlabtwitpic-masonry{
 		width: 98%;
 		margin: 0 1%;
 		position: relative;
 		right: -2%;
 	}
-	.altlabtwitpic-grid-sizer,
-	.altlabtwitpic-brick { 
+	.altlabtwitpic-masonry.maxcol2 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol3 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol4 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol5 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol6 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol2 .altlabtwitpic-brick,
+	.altlabtwitpic-masonry.maxcol3 .altlabtwitpic-brick,
+	.altlabtwitpic-masonry.maxcol4 .altlabtwitpic-brick,
+	.altlabtwitpic-masonry.maxcol5 .altlabtwitpic-brick,
+	.altlabtwitpic-masonry.maxcol6 .altlabtwitpic-brick{ 
 		width: 48%;
 		margin-right: 1%;
 	}
@@ -52,9 +58,66 @@
 		position: relative;
 		right: -1%;
 	}
-	.altlabtwitpic-grid-sizer,
-	.altlabtwitpic-brick { 
+	.altlabtwitpic-masonry.maxcol3 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol4 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol5 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol6 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol3 .altlabtwitpic-brick,
+	.altlabtwitpic-masonry.maxcol4 .altlabtwitpic-brick,
+	.altlabtwitpic-masonry.maxcol5 .altlabtwitpic-brick,
+	.altlabtwitpic-masonry.maxcol6 .altlabtwitpic-brick{ 
 		width: 32%;
+		margin-right: 1%;
+	}
+}
+
+@media (min-width: 1200px) {
+	.altlabtwitpic-masonry{
+		width: 98%;
+		margin: 0 1%;
+		position: relative;
+		right: -1%;
+	}
+
+	.altlabtwitpic-masonry.maxcol4 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol5 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol6 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol4 .altlabtwitpic-brick,
+	.altlabtwitpic-masonry.maxcol5 .altlabtwitpic-brick,
+	.altlabtwitpic-masonry.maxcol6 .altlabtwitpic-brick{ 
+		width: 24%;
+		margin-right: 1%;
+	}
+}
+
+@media (min-width: 1400px) {
+	.altlabtwitpic-masonry{
+		width: 98%;
+		margin: 0 1%;
+		position: relative;
+		right: -1%;
+	}
+
+	.altlabtwitpic-masonry.maxcol5 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol6 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol5 .altlabtwitpic-brick,
+	.altlabtwitpic-masonry.maxcol6 .altlabtwitpic-brick{ 
+		width: 19%;
+		margin-right: 1%;
+	}
+}
+
+@media (min-width: 1800px) {
+	.altlabtwitpic-masonry{
+		width: 98%;
+		margin: 0 1%;
+		position: relative;
+		right: -1%;
+	}
+
+	.altlabtwitpic-masonry.maxcol6 .altlabtwitpic-grid-sizer,
+	.altlabtwitpic-masonry.maxcol6 .altlabtwitpic-brick{ 
+		width: 15%;
 		margin-right: 1%;
 	}
 }
