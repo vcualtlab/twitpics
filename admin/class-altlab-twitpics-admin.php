@@ -166,9 +166,11 @@ function altlab_twitpics_shortcode( $atts ) {
     $a = shortcode_atts( array(
         'paged' => 'true',
         'post_type' => 'twitpic',
-        'post_per_page' => '15',
+        'posts_per_page' => '15',
         'max_column' => '3'
     ), $atts );
+
+    echo $a['paged'];
  	
  	$output= "";
 	// Run a new query for the twitpics
@@ -180,7 +182,7 @@ function altlab_twitpics_shortcode( $atts ) {
 	$args = array(
 		'post_type' => $a['post_type'],
 		'paged' => $paged,
-		'posts_per_page' => $a['post_per_page']
+		'posts_per_page' => $a['posts_per_page']
 	);
 
 	$the_query = new WP_Query( $args );
